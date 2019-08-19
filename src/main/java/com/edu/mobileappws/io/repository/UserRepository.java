@@ -1,4 +1,4 @@
-package com.edu.mobileappws;
+package com.edu.mobileappws.io.repository;
 
 import com.edu.mobileappws.io.entity.UserEntity;
 import org.springframework.data.repository.CrudRepository;

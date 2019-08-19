@@ -1,6 +1,6 @@
 package com.edu.mobileappws.service.impl;
 
-import com.edu.mobileappws.UserRepository;
+import com.edu.mobileappws.io.repository.UserRepository;
 import com.edu.mobileappws.io.entity.UserEntity;
 import com.edu.mobileappws.service.UserService;
 import com.edu.mobileappws.shared.Utils;
@@ -58,5 +58,18 @@ public class UserServiceImpl implements UserService {
         }
 
         return new User(userEntity.getEmail(), userEntity.getEncryptPassword(), new ArrayList<>());
+    }
+
+    @Override
+    public UserDto getUser(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email);
+
+        if (userEntity == null) {
+            throw new UsernameNotFoundException(email);
+        }
+
+        UserDto returnValue = new UserDto();
+        BeanUtils.copyProperties(userEntity, returnValue);
+        return returnValue;
     }
 }

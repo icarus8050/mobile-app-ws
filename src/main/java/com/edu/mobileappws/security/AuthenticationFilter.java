@@ -1,5 +1,8 @@
 package com.edu.mobileappws.security;
 
+import com.edu.mobileappws.SpringApplicationContext;
+import com.edu.mobileappws.service.UserService;
+import com.edu.mobileappws.shared.dto.UserDto;
 import com.edu.mobileappws.ui.model.request.UserLoginRequestModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
@@ -57,7 +60,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
                 .compact();
+        UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
+        UserDto userDto = userService.getUser(userName);
 
         response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+        response.addHeader("UserId", userDto.getUserId());
     }
 }
