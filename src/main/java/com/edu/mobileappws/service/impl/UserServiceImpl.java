@@ -1,10 +1,12 @@
 package com.edu.mobileappws.service.impl;
 
+import com.edu.mobileappws.exceptions.UserServiceException;
 import com.edu.mobileappws.io.repository.UserRepository;
 import com.edu.mobileappws.io.entity.UserEntity;
 import com.edu.mobileappws.service.UserService;
 import com.edu.mobileappws.shared.Utils;
 import com.edu.mobileappws.shared.dto.UserDto;
+import com.edu.mobileappws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -82,6 +84,24 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException(userId);
         }
 
+        BeanUtils.copyProperties(userEntity, returnValue);
+
+        return returnValue;
+    }
+
+    @Override
+    public UserDto updateUser(String userId, UserDto user) {
+        UserDto returnValue = new UserDto();
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if (userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+
+        userRepository.save(userEntity);
         BeanUtils.copyProperties(userEntity, returnValue);
 
         return returnValue;
